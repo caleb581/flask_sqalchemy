@@ -1,0 +1,11 @@
+# Ignore virtual environment
+myvenv/
+
+# Ignore Python cache
+__pycache__/
+
+# Ignore local database
+*.db
+
+# Ignore environment variables file
+.env
