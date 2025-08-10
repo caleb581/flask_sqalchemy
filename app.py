@@ -1,25 +1,29 @@
 import os
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user, current_user
+from flask_login import UserMixin, LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash
 from form import UserForm  
-from flask import flash
+from flask import flash, render_template, redirect, url_for
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:/Users/hp/Desktop/flask_sqalchemy/users.db'
+if os.environ.get("RENDER"):  
+    db_path = os.path.join("/tmp", "users.db")  
+else:  
+    db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "users.db")
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'defaultsecret')
 
-print("Database Path:", os.path.abspath("users.db"))
+print("Database Path:", db_path)
 
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'  
-
+login_manager.login_view = 'login'
 
 
 class User(db.Model, UserMixin):
